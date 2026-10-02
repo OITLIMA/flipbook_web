@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#1f2330">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Nota metodológica · Foro Regional OIT</title>
+<style>
+  *{-webkit-box-sizing:border-box;box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;width:100%}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  body{background:#1f2330;
+       background:-webkit-radial-gradient(center,ellipse,#2b3042 0%,#1f2330 75%);
+       background:radial-gradient(ellipse at center,#2b3042 0%,#1f2330 75%);
+       color:#e9ecf3;font:14px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+       overflow:hidden;position:fixed;top:0;left:0;right:0;bottom:0;
+       -webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;
+       -webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;
+       -ms-touch-action:manipulation;touch-action:manipulation}
+
+  #escena{position:absolute;top:0;left:0;right:0;bottom:64px;
+          display:-webkit-box;display:-ms-flexbox;display:flex;
+          -webkit-box-align:center;-ms-flex-align:center;align-items:center;
+          -webkit-box-pack:center;-ms-flex-pack:center;justify-content:center}
+  #libro{position:relative;
+         -webkit-perspective:2600px;perspective:2600px;
+         -webkit-transition:-webkit-transform .5s ease;transition:transform .5s ease}
+  .mitad{position:absolute;top:0;height:100%;overflow:hidden;background:#fff}
+  .mitad img,.cara img{width:100%;height:100%;display:block;pointer-events:none;
+                       -webkit-user-drag:none;border:0}
+  #izq{left:0;-webkit-box-shadow:-6px 8px 24px rgba(0,0,0,.45);box-shadow:-6px 8px 24px rgba(0,0,0,.45)}
+  #der{right:0;-webkit-box-shadow:6px 8px 24px rgba(0,0,0,.45);box-shadow:6px 8px 24px rgba(0,0,0,.45)}
+  .lomo{position:absolute;top:0;bottom:0;width:7%;pointer-events:none}
+  #izq .lomo{right:0;background:-webkit-linear-gradient(right,rgba(0,0,0,.18),rgba(0,0,0,0));
+             background:linear-gradient(to left,rgba(0,0,0,.18),rgba(0,0,0,0))}
+  #der .lomo{left:0;background:-webkit-linear-gradient(left,rgba(0,0,0,.18),rgba(0,0,0,0));
+             background:linear-gradient(to right,rgba(0,0,0,.18),rgba(0,0,0,0))}
+  .unica .lomo{display:none}
+  .vacia{visibility:hidden}
+
+  /* hoja que gira */
+  .hoja{position:absolute;top:0;height:100%;z-index:5;
+        -webkit-transform-style:preserve-3d;transform-style:preserve-3d}
+  .cara{position:absolute;top:0;left:0;right:0;bottom:0;background:#fff;overflow:hidden;
+        -webkit-backface-visibility:hidden;backface-visibility:hidden}
+  .cara.frente{-webkit-transform:rotateY(0deg) translateZ(1px);transform:rotateY(0deg) translateZ(1px)}
+  .cara.tras{-webkit-transform:rotateY(180deg) translateZ(1px);transform:rotateY(180deg) translateZ(1px)}
+  .sombra{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;opacity:0;
+          -webkit-transition:opacity .7s ease-in-out;transition:opacity .7s ease-in-out}
+  .adelante .frente .sombra{background:-webkit-linear-gradient(right,rgba(0,0,0,.35),rgba(0,0,0,0) 60%);
+                            background:linear-gradient(to left,rgba(0,0,0,.35),rgba(0,0,0,0) 60%)}
+  .adelante .tras .sombra{background:-webkit-linear-gradient(right,rgba(0,0,0,.25),rgba(0,0,0,0) 40%);
+                          background:linear-gradient(to left,rgba(0,0,0,.25),rgba(0,0,0,0) 40%)}
+  .atras .frente .sombra{background:-webkit-linear-gradient(left,rgba(0,0,0,.35),rgba(0,0,0,0) 60%);
+                         background:linear-gradient(to right,rgba(0,0,0,.35),rgba(0,0,0,0) 60%)}
+  .atras .tras .sombra{background:-webkit-linear-gradient(left,rgba(0,0,0,.25),rgba(0,0,0,0) 40%);
+                       background:linear-gradient(to right,rgba(0,0,0,.25),rgba(0,0,0,0) 40%)}
+  .girando .sombra{opacity:1}
+
+  /* zonas de clic */
+  .zona{position:absolute;top:0;height:100%;width:50%;z-index:4;cursor:pointer}
+  #zIzq{left:0}#zDer{right:0}
+
+  /* flechas laterales */
+  .flecha{position:absolute;top:50%;margin-top:-23px;z-index:10;width:46px;height:46px;
+          border:0;border-radius:50%;background:rgba(255,255,255,.08);color:#e9ecf3;
+          font-size:24px;line-height:46px;text-align:center;cursor:pointer;outline:none;
+          -webkit-appearance:none;-moz-appearance:none;appearance:none;
+          -webkit-transition:background .2s,opacity .2s;transition:background .2s,opacity .2s}
+  .flecha:hover{background:rgba(255,255,255,.18)}
+  .flecha[disabled]{opacity:.15;cursor:default}
+  #ant{left:14px}#sig{right:14px}
+
+  /* barra inferior */
+  #barra{position:absolute;left:0;right:0;bottom:0;height:64px;background:#14171f;
+         background:rgba(20,23,32,.95);overflow:hidden;white-space:nowrap;
+         display:-webkit-box;display:-ms-flexbox;display:flex;
+         -webkit-box-align:center;-ms-flex-align:center;align-items:center;
+         padding:0 10px;padding-bottom:env(safe-area-inset-bottom)}
+  #barra > *{margin:0 5px}
+  .boton{background:transparent;border:1px solid rgba(255,255,255,.18);color:#e9ecf3;
+         border-radius:8px;height:36px;min-width:36px;padding:0 10px;cursor:pointer;
+         font:inherit;font-size:15px;line-height:34px;text-align:center;text-decoration:none;
+         display:inline-block;outline:none;
+         -webkit-appearance:none;-moz-appearance:none;appearance:none;
+         -webkit-box-flex:0;-ms-flex:none;flex:none}
+  .boton:hover{border-color:#4f8cff;color:#fff}
+  #rango{-webkit-box-flex:1;-ms-flex:1 1 auto;flex:1 1 auto;min-width:60px;width:100%;accent-color:#4f8cff}
+  #contador{color:#9aa3b8;-webkit-box-flex:0;-ms-flex:none;flex:none}
+  #titulo{color:#9aa3b8;max-width:260px;overflow:hidden;text-overflow:ellipsis;
+          -webkit-box-flex:0;-ms-flex:none;flex:none}
+  .oculto{display:none !important}
+  .boton.apagado{opacity:.35;text-decoration:line-through}
+
+  /* miniaturas */
+  #minis{position:absolute;left:0;right:0;bottom:64px;height:0;overflow:hidden;
+         background:rgba(20,23,32,.95);white-space:nowrap;overflow-x:auto;
+         -webkit-overflow-scrolling:touch;
+         -webkit-transition:height .3s ease;transition:height .3s ease}
+  #minis.abierto{height:150px}
+  #minis img{height:118px;margin:14px 0 0 12px;border:2px solid transparent;border-radius:3px;
+             cursor:pointer;background:#fff;display:inline-block;vertical-align:top}
+  #minis img.activa{border-color:#4f8cff}
+
+  /* lupa */
+  #lupa{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(10,12,18,.97);z-index:50;
+        display:none;overflow:auto;-webkit-overflow-scrolling:touch;cursor:zoom-out}
+  #lupa.abierta{display:block}
+  #lupa img{display:block;margin:20px auto;width:180%;max-width:1500px;background:#fff}
+  @media (min-width:900px){ #lupa img{width:95%} }
+  #cerrarLupa{position:fixed;top:14px;right:18px;z-index:51;font-size:22px;line-height:42px;
+              background:rgba(255,255,255,.15);color:#fff;border:0;border-radius:50%;
+              width:42px;height:42px;cursor:pointer;display:none;text-align:center}
+  #lupa.abierta + #cerrarLupa{display:block}
+
+  #aviso{position:absolute;top:0;left:0;right:0;bottom:0;display:none;padding:30px;text-align:center;
+         font-size:16px;line-height:1.6}
+  #aviso a{color:#4f8cff}
+
+  @media (max-width:700px){
+    #titulo,.solo-ancho{display:none !important}
+    #barra{padding:0 4px;padding-bottom:env(safe-area-inset-bottom)}
+    #barra > *{margin:0 3px}
+    .boton{padding:0 8px}
+    .flecha{width:38px;height:38px;margin-top:-19px;font-size:20px;line-height:38px}
+    #ant{left:4px}#sig{right:4px}
+  }
+  @media print{ #escena,#barra,#minis{display:none} }
+</style>
+</head>
+<body>
+<noscript>
+  <div style="padding:30px;text-align:center;font-size:16px">
+    Para ver este libro digital activa JavaScript en tu navegador.
+  </div>
+</noscript>
+
+<div id="escena">
+  <div id="libro">
+    <div class="mitad" id="izq"><img alt="" draggable="false"><div class="lomo"></div></div>
+    <div class="mitad" id="der"><img alt="" draggable="false"><div class="lomo"></div></div>
+    <div class="zona" id="zIzq"></div>
+    <div class="zona" id="zDer"></div>
+  </div>
+  <button type="button" class="flecha" id="ant" aria-label="Página anterior">&#8249;</button>
+  <button type="button" class="flecha" id="sig" aria-label="Página siguiente">&#8250;</button>
+</div>
+
+<div id="minis"></div>
+
+<div id="barra">
+  <span id="titulo">Nota metodológica · Foro Regional OIT</span>
+  <button type="button" class="boton solo-ancho" id="bPrimera" title="Inicio">&#171;</button>
+  <input id="rango" type="range" min="0" max="1" step="1" value="0" aria-label="Ir a página">
+  <button type="button" class="boton solo-ancho" id="bUltima" title="Final">&#187;</button>
+  <span id="contador"></span>
+  <button type="button" class="boton" id="bMinis" title="Miniaturas">&#9638;</button>
+  <button type="button" class="boton solo-ancho" id="bLupa" title="Ampliar página">+</button>
+  <button type="button" class="boton" id="bSonido" title="Sonido activado / desactivado">&#9835;</button>
+  <button type="button" class="boton" id="bPantalla" title="Pantalla completa">&#9634;</button>
+  <a class="boton oculto" id="bPdf" title="Descargar PDF" href="#">PDF</a>
+</div>
+
+<div id="lupa"><img alt="Página ampliada"></div>
+<button type="button" id="cerrarLupa" aria-label="Cerrar">&#215;</button>
+
+<script>
+(function () {
+  'use strict';
+  var PAGINAS = ["paginas/pagina_001.jpg", "paginas/pagina_002.jpg", "paginas/pagina_003.jpg", "paginas/pagina_004.jpg", "paginas/pagina_005.jpg", "paginas/pagina_006.jpg", "paginas/pagina_007.jpg", "paginas/pagina_008.jpg", "paginas/pagina_009.jpg", "paginas/pagina_010.jpg", "paginas/pagina_011.jpg", "paginas/pagina_012.jpg"];          /* rutas o data-URI de cada página */
+  var PROPORCION = 1.41437;    /* alto / ancho de una página */
+  var PDF_URL = "Nota_metodologica_Foro_Regional_Democracia_OOEE_V01_10_final.pdf";          /* ruta del PDF (versión web) */
+  var PDF_B64 = "";          /* PDF incrustado (versión un archivo) */
+  var PDF_NOMBRE = "Nota_metodologica_Foro_Regional_Democracia_OOEE_V01_10_final.pdf";
+  var DURACION = 700;                 /* ms del giro */
+  var SONIDO = true;            /* true/false */
+  var SONIDO_SRC = "";    /* mp3 propio (ruta o data-URI) o "" */
+
+  var N = PAGINAS.length;
+  function $(id) { return document.getElementById(id); }
+  var libro = $('libro'), izq = $('izq'), der = $('der');
+  var imgIzq = izq.getElementsByTagName('img')[0], imgDer = der.getElementsByTagName('img')[0];
+  var doble = true, pliegos = [], actual = 0, ocupado = false;
+
+  /* ---------- utilidades compatibles ---------- */
+  function contiene(arr, v) { for (var i = 0; i < arr.length; i++) if (arr[i] === v) return true; return false; }
+  function addClase(el, c) { if (el.classList) el.classList.add(c); else if ((' ' + el.className + ' ').indexOf(' ' + c + ' ') < 0) el.className += ' ' + c; }
+  function quitarClase(el, c) { if (el.classList) el.classList.remove(c); else el.className = (' ' + el.className + ' ').replace(' ' + c + ' ', ' ').replace(/^\s+|\s+$/g, ''); }
+  function tieneClase(el, c) { return el.classList ? el.classList.contains(c) : (' ' + el.className + ' ').indexOf(' ' + c + ' ') >= 0; }
+  function ponClase(el, c, si) { if (si) addClase(el, c); else quitarClase(el, c); }
+  function transformar(el, t) { el.style.webkitTransform = t; el.style.msTransform = t; el.style.transform = t; }
+  function transicion(el, t) { el.style.webkitTransition = t.replace('transform', '-webkit-transform'); el.style.transition = t; }
+  function escuchar(el, ev, fn, pasivo) {
+    var opc = false;
+    if (pasivo) { try { var o = Object.defineProperty({}, 'passive', { get: function () { opc = { passive: true }; } }); window.addEventListener('t', null, o); } catch (e) {} }
+    el.addEventListener(ev, fn, opc);
+  }
+  var raf = window.requestAnimationFrame || window.webkitRequestAnimationFrame || function (f) { return setTimeout(f, 16); };
+  function anchoVentana() { return window.innerWidth || document.documentElement.clientWidth; }
+  function altoVentana() { return window.innerHeight || document.documentElement.clientHeight; }
+
+  /* ¿soporta 3D? si no, cambia de página sin animación */
+  var soporta3D = (function () {
+    try {
+      if (window.CSS && CSS.supports) return CSS.supports('transform-style', 'preserve-3d') || CSS.supports('-webkit-transform-style', 'preserve-3d');
+      var s = document.createElement('div').style;
+      return ('webkitPerspective' in s) || ('perspective' in s);
+    } catch (e) { return false; }
+  })();
+
+  /* precarga */
+  for (var p = 0; p < N; p++) { var im = new Image(); im.src = PAGINAS[p]; }
+
+  /* ---------- sonido de hoja ---------- */
+  var AC = window.AudioContext || window.webkitAudioContext, ctxA = null, ruido = null, mp3 = null;
+  var sonidoOn = SONIDO;
+  try { var pref = window.localStorage && localStorage.getItem('flipbook_sonido'); if (pref !== null && pref !== undefined) sonidoOn = SONIDO && pref === '1'; } catch (e) {}
+  if (SONIDO_SRC) { try { mp3 = new Audio(SONIDO_SRC); mp3.preload = 'auto'; } catch (e) { mp3 = null; } }
+  function contexto() {
+    if (!AC) return null;
+    if (!ctxA) { try { ctxA = new AC(); } catch (e) { AC = null; return null; } }
+    if (ctxA.state === 'suspended' && ctxA.resume) { try { ctxA.resume(); } catch (e) {} }
+    return ctxA;
+  }
+  function iniciar(n, t) { if (n.start) n.start(t); else n.noteOn(t); }
+  function detener(n, t) { if (n.stop) n.stop(t); else n.noteOff(t); }
+  /* iPhone/Android exigen un toque del usuario antes de permitir audio */
+  var desbloqueado = false;
+  function desbloquear() {
+    if (desbloqueado || !sonidoOn) return;
+    var c = contexto();
+    if (c) { try { var b = c.createBuffer(1, 1, 22050), s = c.createBufferSource(); s.buffer = b; s.connect(c.destination); iniciar(s, 0); desbloqueado = true; } catch (e) {} }
+    if (mp3) { try { mp3.muted = true; var pr = mp3.play(); if (pr && pr.then) pr.then(function () { mp3.pause(); mp3.muted = false; })['catch'](function () {}); else { mp3.pause(); mp3.muted = false; } } catch (e) {} }
+  }
+  escuchar(document, 'touchend', desbloquear, true);
+  escuchar(document, 'mousedown', desbloquear, true);
+  escuchar(document, 'keydown', desbloquear, true);
+
+  function sonarPagina() {
+    if (!sonidoOn) return;
+    if (mp3) {                                   /* sonido propio */
+      try { var a = mp3.cloneNode(true); a.volume = 0.7; var pr = a.play(); if (pr && pr['catch']) pr['catch'](function () {}); } catch (e) {}
+      return;
+    }
+    var c = contexto(); if (!c) return;          /* sonido de papel generado */
+    try {
+      var dur = 0.5, sr = c.sampleRate, t = c.currentTime + 0.01;
+      if (!ruido) {
+        ruido = c.createBuffer(1, Math.floor(sr * dur), sr);
+        var d = ruido.getChannelData(0), ult = 0;
+        for (var i = 0; i < d.length; i++) { var w = Math.random() * 2 - 1; ult = 0.6 * ult + 0.4 * w; d[i] = w * 0.6 + ult * 0.8; }
+      }
+      var src = c.createBufferSource(); src.buffer = ruido;
+      src.playbackRate.value = 0.85 + Math.random() * 0.3;
+      var filtro = c.createBiquadFilter();
+      filtro.type = 'bandpass'; filtro.Q.value = 0.7;
+      filtro.frequency.setValueAtTime(1200, t);
+      filtro.frequency.linearRampToValueAtTime(3800, t + 0.28);
+      filtro.frequency.linearRampToValueAtTime(900, t + dur);
+      var g = (c.createGain || c.createGainNode).call(c);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.linearRampToValueAtTime(0.18, t + 0.06);      /* roce del papel */
+      g.gain.linearRampToValueAtTime(0.10, t + 0.22);
+      g.gain.linearRampToValueAtTime(0.45, t + 0.34);      /* la hoja cae */
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      src.connect(filtro); filtro.connect(g); g.connect(c.destination);
+      iniciar(src, t); detener(src, t + dur);
+    } catch (e) {}
+  }
+
+  /* ---------- pliegos (páginas visibles a la vez) ---------- */
+  function armarPliegos() {
+    pliegos = [];
+    var i;
+    if (doble) {
+      pliegos.push([null, 0]);                              /* portada sola a la derecha */
+      for (i = 1; i < N; i += 2) pliegos.push([i, i + 1 < N ? i + 1 : null]);
+    } else {
+      for (i = 0; i < N; i++) pliegos.push([i]);
+    }
+  }
+  function pliegoDePagina(pg) {
+    for (var i = 0; i < pliegos.length; i++) if (contiene(pliegos[i], pg)) return i;
+    return 0;
+  }
+  function paginaVisible() {
+    var pl = pliegos[actual];
+    for (var i = 0; i < pl.length; i++) if (pl[i] !== null) return pl[i];
+    return 0;
+  }
+
+  /* ---------- tamaño ---------- */
+  function medir() {
+    var pagAntes = pliegos.length ? paginaVisible() : 0;
+    var w = anchoVentana(), h = altoVentana();
+    doble = w > 760 && w > h * 0.9;
+    ponClase(document.body, 'unica', !doble);
+    armarPliegos();
+    actual = pliegoDePagina(pagAntes);
+
+    var margenH = w > 700 ? 130 : 50, margenV = 40;
+    var altoDisp = h - 64 - margenV, anchoDisp = w - margenH;
+    var columnas = doble ? 2 : 1;
+    var anchoPag = Math.max(50, Math.min(anchoDisp / columnas, altoDisp / PROPORCION));
+    var altoPag = anchoPag * PROPORCION;
+    libro.style.width = (anchoPag * columnas) + 'px';
+    libro.style.height = altoPag + 'px';
+    izq.style.width = anchoPag + 'px';
+    der.style.width = anchoPag + 'px';
+    if (!doble) { izq.style.display = 'none'; der.style.left = '0'; der.style.right = 'auto'; }
+    else { izq.style.display = ''; der.style.left = ''; der.style.right = ''; }
+    libro.setAttribute('data-ancho', anchoPag);
+    pintar();
+  }
+
+  /* ---------- dibujar ---------- */
+  function poner(img, cont, idx) {
+    if (idx === null || idx === undefined) { addClase(cont, 'vacia'); img.removeAttribute('src'); }
+    else { quitarClase(cont, 'vacia'); if (img.getAttribute('src') !== PAGINAS[idx]) img.src = PAGINAS[idx]; }
+  }
+  function centrar(pl) {
+    var dx = 0;
+    if (doble) { if (pl[0] === null) dx = -25; else if (pl[1] === null) dx = 25; }
+    transformar(libro, 'translateX(' + dx + '%)');
+  }
+  function pintar() {
+    var pl = pliegos[actual];
+    if (doble) { poner(imgIzq, izq, pl[0]); poner(imgDer, der, pl[1]); }
+    else poner(imgDer, der, pl[0]);
+    centrar(pl);
+    actualizarUI();
+  }
+  function actualizarUI() {
+    var pl = pliegos[actual], vis = [];
+    for (var i = 0; i < pl.length; i++) if (pl[i] !== null) vis.push(pl[i] + 1);
+    $('contador').innerHTML = (vis.length > 1 ? vis.join('&ndash;') : vis[0]) + ' / ' + N;
+    $('rango').max = N - 1; $('rango').value = paginaVisible();
+    $('ant').disabled = actual === 0;
+    $('sig').disabled = actual === pliegos.length - 1;
+    var ms = $('minis').getElementsByTagName('img');
+    for (var j = 0; j < ms.length; j++) ponClase(ms[j], 'activa', contiene(pl, j));
+    try { if (window.history && history.replaceState) history.replaceState(null, '', '#p=' + (paginaVisible() + 1)); } catch (e) {}
+  }
+
+  /* ---------- animación de giro ---------- */
+  function cara(clase, idx) {
+    return '<div class="cara ' + clase + '">' + (idx !== null && idx !== undefined ? '<img src="' + PAGINAS[idx] + '" alt="">' : '') + '<div class="sombra"></div></div>';
+  }
+  function crearHoja(frente, tras, sentido) {
+    var h = document.createElement('div');
+    h.className = 'hoja ' + sentido;
+    h.style.width = libro.getAttribute('data-ancho') + 'px';
+    h.innerHTML = cara('frente', frente) + cara('tras', tras);
+    libro.appendChild(h);
+    return h;
+  }
+  function animar(h, desde, hasta, alTerminar) {
+    transformar(h, 'rotateY(' + desde + 'deg)');
+    h.offsetWidth; /* fuerza el repintado antes de animar (Safari/Firefox) */
+    raf(function () { raf(function () {
+      addClase(h, 'girando');
+      transicion(h, 'transform ' + DURACION + 'ms cubic-bezier(.45,.05,.35,1)');
+      transformar(h, 'rotateY(' + hasta + 'deg)');
+    }); });
+    setTimeout(alTerminar, DURACION + 40);
+  }
+  function girar(dir) {
+    if (ocupado) return;
+    var destino = actual + dir;
+    if (destino < 0 || destino >= pliegos.length) return;
+    sonarPagina();
+    if (!soporta3D) { actual = destino; pintar(); return; }
+    ocupado = true;
+    var de = pliegos[actual], a = pliegos[destino], h;
+
+    if (!doble) {
+      h = crearHoja(dir > 0 ? de[0] : a[0], null, dir > 0 ? 'adelante' : 'atras');
+      h.style.left = '0';
+      h.style.webkitTransformOrigin = 'left center'; h.style.transformOrigin = 'left center';
+      if (dir > 0) poner(imgDer, der, a[0]);
+      animar(h, dir > 0 ? 0 : -180, dir > 0 ? -180 : 0, function () {
+        actual = destino; pintar(); h.parentNode.removeChild(h); ocupado = false;
+      });
+      return;
+    }
+
+    if (dir > 0) {   /* la hoja derecha gira hacia la izquierda */
+      h = crearHoja(de[1], a[0], 'adelante');
+      h.style.left = '50%';
+      h.style.webkitTransformOrigin = 'left center'; h.style.transformOrigin = 'left center';
+      poner(imgDer, der, a[1]);
+    } else {         /* la hoja izquierda gira hacia la derecha */
+      h = crearHoja(de[0], a[1], 'atras');
+      h.style.left = '0';
+      h.style.webkitTransformOrigin = 'right center'; h.style.transformOrigin = 'right center';
+      poner(imgIzq, izq, a[0]);
+    }
+    centrar(a);
+    animar(h, 0, dir > 0 ? -180 : 180, function () {
+      actual = destino; pintar(); h.parentNode.removeChild(h); ocupado = false;
+    });
+  }
+  function irA(pg) {
+    pg = Math.max(0, Math.min(N - 1, pg));
+    var d = pliegoDePagina(pg);
+    if (d === actual) return;
+    if (Math.abs(d - actual) === 1) { girar(d - actual); return; }
+    sonarPagina();
+    actual = d; pintar();
+  }
+
+  /* ---------- controles ---------- */
+  $('sig').onclick = function () { girar(1); };
+  $('ant').onclick = function () { girar(-1); };
+  $('zDer').onclick = function () { girar(1); };
+  $('zIzq').onclick = function () { girar(-1); };
+  $('bPrimera').onclick = function () { irA(0); };
+  $('bUltima').onclick = function () { irA(N - 1); };
+  var rango = $('rango');
+  function porRango() { irA(parseInt(rango.value, 10)); }
+  escuchar(rango, 'input', porRango);
+  escuchar(rango, 'change', porRango);
+
+  escuchar(document, 'keydown', function (e) {
+    var k = e.key || '', c = e.keyCode;
+    if (tieneClase($('lupa'), 'abierta')) { if (k === 'Escape' || k === 'Esc' || c === 27) cerrarLupa(); return; }
+    if (e.target && e.target.tagName === 'INPUT') return;
+    if (k === 'ArrowRight' || k === 'Right' || k === 'PageDown' || c === 39 || c === 34 || c === 32) { if (e.preventDefault) e.preventDefault(); girar(1); }
+    else if (k === 'ArrowLeft' || k === 'Left' || k === 'PageUp' || c === 37 || c === 33) { if (e.preventDefault) e.preventDefault(); girar(-1); }
+    else if (k === 'Home' || c === 36) irA(0);
+    else if (k === 'End' || c === 35) irA(N - 1);
+  });
+
+  /* deslizar con el dedo (celulares y tablets) */
+  var x0 = null, y0 = null;
+  escuchar(document, 'touchstart', function (e) {
+    if (tieneClase($('lupa'), 'abierta') || e.touches.length > 1) { x0 = null; return; }
+    x0 = e.touches[0].clientX; y0 = e.touches[0].clientY;
+  }, true);
+  escuchar(document, 'touchend', function (e) {
+    if (x0 === null) return;
+    var t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) girar(dx < 0 ? 1 : -1);
+    x0 = null;
+  }, true);
+
+  /* rueda del ratón */
+  var ultimaRueda = 0;
+  escuchar($('escena'), 'wheel', function (e) {
+    var t = new Date().getTime(); if (t - ultimaRueda < 450) return;
+    ultimaRueda = t; girar(e.deltaY > 0 || e.deltaX > 0 ? 1 : -1);
+  }, true);
+
+  /* miniaturas */
+  var minis = $('minis');
+  for (var q = 0; q < N; q++) {
+    (function (i) {
+      var mi = document.createElement('img');
+      mi.src = PAGINAS[i]; mi.title = 'Página ' + (i + 1); mi.alt = 'Página ' + (i + 1);
+      mi.onclick = function () { irA(i); };
+      minis.appendChild(mi);
+    })(q);
+  }
+  $('bMinis').onclick = function () { ponClase(minis, 'abierto', !tieneClase(minis, 'abierto')); };
+
+  /* lupa */
+  var ultimoLado = 'der';
+  $('zIzq').onmouseover = function () { ultimoLado = 'izq'; };
+  $('zDer').onmouseover = function () { ultimoLado = 'der'; };
+  function abrirLupa() {
+    var pl = pliegos[actual], idx = paginaVisible();
+    if (doble && pl[0] !== null && pl[1] !== null) idx = ultimoLado === 'izq' ? pl[0] : pl[1];
+    $('lupa').getElementsByTagName('img')[0].src = PAGINAS[idx];
+    addClase($('lupa'), 'abierta'); $('lupa').scrollTop = 0;
+  }
+  function cerrarLupa() { quitarClase($('lupa'), 'abierta'); }
+  $('bLupa').onclick = abrirLupa;
+  libro.ondblclick = abrirLupa;
+  $('lupa').onclick = cerrarLupa;
+  $('cerrarLupa').onclick = cerrarLupa;
+
+  /* pantalla completa (con prefijos; se oculta donde no existe, p. ej. iPhone) */
+  var de = document.documentElement;
+  var pedirPC = de.requestFullscreen || de.webkitRequestFullscreen || de.webkitRequestFullScreen || de.mozRequestFullScreen || de.msRequestFullscreen;
+  var salirPC = document.exitFullscreen || document.webkitExitFullscreen || document.webkitCancelFullScreen || document.mozCancelFullScreen || document.msExitFullscreen;
+  function enPC() { return document.fullscreenElement || document.webkitFullscreenElement || document.webkitCurrentFullScreenElement || document.mozFullScreenElement || document.msFullscreenElement; }
+  if (!pedirPC) addClase($('bPantalla'), 'oculto');
+  $('bPantalla').onclick = function () {
+    try { if (!enPC()) pedirPC.call(de); else salirPC.call(document); } catch (e) {}
+  };
+
+  /* botón de sonido */
+  var bSonido = $('bSonido');
+  if (!SONIDO || (!AC && !mp3)) addClase(bSonido, 'oculto');
+  function marcarSonido() { ponClase(bSonido, 'apagado', !sonidoOn); bSonido.title = sonidoOn ? 'Silenciar' : 'Activar sonido'; }
+  marcarSonido();
+  bSonido.onclick = function () {
+    sonidoOn = !sonidoOn; marcarSonido();
+    try { localStorage.setItem('flipbook_sonido', sonidoOn ? '1' : '0'); } catch (e) {}
+    if (sonidoOn) { desbloquear(); sonarPagina(); }
+  };
+
+  /* descarga del PDF */
+  var bPdf = $('bPdf');
+  if (PDF_URL) {
+    bPdf.href = PDF_URL; bPdf.setAttribute('download', PDF_NOMBRE); quitarClase(bPdf, 'oculto');
+  } else if (PDF_B64) {
+    quitarClase(bPdf, 'oculto');
+    bPdf.onclick = function (e) {
+      if (e && e.preventDefault) e.preventDefault();
+      try {
+        var bin = atob(PDF_B64), len = bin.length, bytes = new Uint8Array(len);
+        for (var i = 0; i < len; i++) bytes[i] = bin.charCodeAt(i);
+        var blob = new Blob([bytes], { type: 'application/pdf' });
+        if (window.navigator && navigator.msSaveOrOpenBlob) { navigator.msSaveOrOpenBlob(blob, PDF_NOMBRE); return false; }
+        var url = (window.URL || window.webkitURL).createObjectURL(blob);
+        var a = document.createElement('a');
+        if ('download' in a) {
+          a.href = url; a.download = PDF_NOMBRE; a.style.display = 'none';
+          document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        } else { window.open(url, '_blank'); }
+        setTimeout(function () { (window.URL || window.webkitURL).revokeObjectURL(url); }, 30000);
+      } catch (err) { alert('No se pudo descargar el PDF en este navegador.'); }
+      return false;
+    };
+  }
+
+  /* ajuste al cambiar tamaño o girar el celular */
+  var tm = null;
+  function reajustar() { clearTimeout(tm); tm = setTimeout(function () { if (!ocupado) medir(); else reajustar(); }, 150); }
+  escuchar(window, 'resize', reajustar);
+  escuchar(window, 'orientationchange', reajustar);
+
+  /* inicio (admite enlaces tipo ...#p=5) */
+  medir();
+  var m = (location.hash || '').match(/p=(\d+)/);
+  if (m) { actual = pliegoDePagina(Math.min(N, parseInt(m[1], 10)) - 1); pintar(); }
+})();
+</script>
+</body>
+</html>
